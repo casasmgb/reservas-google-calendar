@@ -11,8 +11,16 @@ export class GoogleCalendarService {
   private timeZone = 'America/La_Paz';
 
   constructor() {
+    const credentialsEnv = process.env.GOOGLE_CALENDAR_CREDENTIALS;
+    if (!credentialsEnv) {
+      throw new Error('La variable de entorno GOOGLE_CALENDAR_CREDENTIALS no está definida');
+    }
+    const credentials = JSON.parse(credentialsEnv);
+
+    // Inicializamos la autenticación con Google usando las credenciales obtenidas
     const auth = new google.auth.GoogleAuth({
-      keyFile: process.env.GOOGLE_CALENDAR_CREDENTIALS,
+      // keyFile: process.env.GOOGLE_CALENDAR_CREDENTIALS,
+      credentials,  // Usamos el objeto obtenido por JSON.parse()
       scopes: ['https://www.googleapis.com/auth/calendar'],
     });
 
@@ -98,5 +106,4 @@ export class GoogleCalendarService {
       eventId: event.data.id,
     };
   }
-
 }
